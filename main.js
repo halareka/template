@@ -128,6 +128,7 @@ bot.onText("/week_stats", (msg) => {
     bot.sendMessage(chatId, 'Выберите пользователя для просмотра недельной статистики:', options);
 });
 bot.on('callback_query', async (callbackQuery) => { 
+    
     const chatId = callbackQuery.message.chat.id;
     const messageId = callbackQuery.message.message_id; 
     const userSelection = callbackQuery.data;
