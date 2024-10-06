@@ -15,7 +15,10 @@ const USERS = //стата за день | стата за лучший день
         "https://wakatime.com/share/@halareka/90a7773a-40b2-4326-b74a-e53954e77286.json", // json,coding activity,last 7 days,show title,future coding data
         "https://wakatime.com/share/@halareka/5a2397ec-5b67-41d1-ba9b-15f268fa026b.json"  // json,coding activity,all time,show title,future coding data
     ],
-    "user2": "",
+    "nibezo": [
+        "https://wakatime.com/share/@30838c7f-cfb1-48d0-a9ef-20445daa7d27/2de7309e-459b-4d7b-8ded-794f9f835345.json",
+        "https://wakatime.com/share/@30838c7f-cfb1-48d0-a9ef-20445daa7d27/c9395f55-4189-4bea-9a8d-c20c19db0f4c.json"
+    ],
     "user3": "",
     "user4": "",
     "user5": "",
@@ -68,7 +71,7 @@ bot.onText("/stats", (msg) => {
         reply_markup: {
             inline_keyboard: [
                 [{ text: 'halareka', callback_data: '1' },],
-                [{ text: 'user2', callback_data: '2' },],
+                [{ text: 'nibezo', callback_data: '2' },],
                 [{ text: 'user3', callback_data: '3' },],
                 [{ text: 'user4', callback_data: '4' },],
                 [{ text: 'user5', callback_data: '5' }]
@@ -97,7 +100,16 @@ bot.on('callback_query', async (callbackQuery) => {
         DAY_DATA = {}; BEST_DAY_DATA = {};
         break;
         case '2':
-            responseMessage = 'Извините,данный юзер еще не добавлен:(';
+            firstUserName = Object.keys(USERS)[userSelection-1]; // никнэйм
+            data = await fetchDailyData(USERS.nibezo[0]); 
+            best_data = await fetchBestData(USERS.nibezo[1]); 
+    
+            if (DAY_DATA.length > 6 && DAY_DATA[6].range) {
+                responseMessage = `Statistics for <b>${firstUserName}</b> for the day \nDate: ${JSON.stringify(DAY_DATA[6].range.date)},\nCoding time: ${JSON.stringify(DAY_DATA[6].grand_total.text)}\n——————————————————\n\nStatistics for <b>${firstUserName}</b> for the best day \nDate: ${JSON.stringify(BEST_DAY_DATA.data.best_day.date)},\nCoding time: ${JSON.stringify(BEST_DAY_DATA.data.best_day.text)}\n——————————————————\n\nTotal time: ${JSON.stringify(BEST_DAY_DATA.data.grand_total.human_readable_total)}\n\nWeekly statistics: ${calculateTotalTime(DAY_DATA)}`;
+            } else {
+                responseMessage = `No data available for <b>${firstUserName}</b>. Please try again later.`;
+            }
+            DAY_DATA = {}; BEST_DAY_DATA = {};
             break;
         case '3':
             responseMessage = 'Извините,данный юзер еще не добавлен:(';
