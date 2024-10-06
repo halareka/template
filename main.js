@@ -63,7 +63,7 @@ function calculateTotalTime(data) {
 }
 bot.onText("/stats", (msg) => {
     const chatId = msg.chat.id;
-    // Inline buttons arranged in multiple rows
+    // инлайн кнопки
     const options = {
         reply_markup: {
             inline_keyboard: [
@@ -85,12 +85,17 @@ bot.on('callback_query', async (callbackQuery) => {
     let responseMessage;
     switch (userSelection) {
         case '1':            
-            firstUserName = Object.keys(USERS)[userSelection-1]; // Ник-нейм
-            data = await fetchDailyData(USERS.halareka[0]); 
-            best_data = await fetchBestData(USERS.halareka[1]); 
+        firstUserName = Object.keys(USERS)[userSelection-1]; // никнэйм
+        data = await fetchDailyData(USERS.halareka[0]); 
+        best_data = await fetchBestData(USERS.halareka[1]); 
+
+        if (DAY_DATA.length > 6 && DAY_DATA[6].range) {
             responseMessage = `Statistics for <b>${firstUserName}</b> for the day \nDate: ${JSON.stringify(DAY_DATA[6].range.date)},\nCoding time: ${JSON.stringify(DAY_DATA[6].grand_total.text)}\n——————————————————\n\nStatistics for <b>${firstUserName}</b> for the best day \nDate: ${JSON.stringify(BEST_DAY_DATA.data.best_day.date)},\nCoding time: ${JSON.stringify(BEST_DAY_DATA.data.best_day.text)}\n——————————————————\n\nTotal time: ${JSON.stringify(BEST_DAY_DATA.data.grand_total.human_readable_total)}\n\nWeekly statistics: ${calculateTotalTime(DAY_DATA)}`;
-            DAY_DATA = {}; BEST_DAY_DATA = {};
-            break;
+        } else {
+            responseMessage = `No data available for <b>${firstUserName}</b>. Please try again later.`;
+        }
+        DAY_DATA = {}; BEST_DAY_DATA = {};
+        break;
         case '2':
             responseMessage = 'Извините,данный юзер еще не добавлен:(';
             break;
@@ -112,5 +117,3 @@ bot.on('callback_query', async (callbackQuery) => {
         console.error("Failed to delete message:", error);
     });
 });
-
-
